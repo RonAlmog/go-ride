@@ -7,13 +7,13 @@ function Navbar() {
       <div className="flex gap-10 items-center">
         <Image src="/logo.png" alt="Go Ride" width={120} height={60} />
         <div className="hidden md:flex items-center gap-6">
-          <h2 className="hover:bg-gray-100 p-2 rounded-md cursor-pointer transition-all">
+          <h2 className="hover:bg-gray-100 p-2 rounded-md cursor-pointer transition-all font-medium">
             Home
           </h2>
-          <h2 className="hover:bg-gray-100 p-2 rounded-md cursor-pointer transition-all">
+          <h2 className="hover:bg-gray-100 p-2 rounded-md cursor-pointer transition-all font-medium">
             History
           </h2>
-          <h2 className="hover:bg-gray-100 p-2 rounded-md cursor-pointer transition-all">
+          <h2 className="hover:bg-gray-100 p-2 rounded-md cursor-pointer transition-all font-medium">
             Help
           </h2>
         </div>

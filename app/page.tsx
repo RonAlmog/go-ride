@@ -1,8 +1,14 @@
+import Booking from "@/components/booking/booking";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h2 className="text-2xl font-semibold">Title here</h2>
-      <p>Test page</p>
+    <main className="">
+      <div className="grid grid-cols-1 md:grid-cols-3">
+        <div className="col-span-1">
+          <Booking />
+        </div>
+        <div className="col-span-2">map</div>
+      </div>
     </main>
   );
 }
