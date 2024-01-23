@@ -15,5 +15,5 @@ export async function GET(request: Request) {
     },
   });
   const searchResult = await res.json();
-  return NextResponse.json({ searchResult });
+  return NextResponse.json(searchResult);
 }
