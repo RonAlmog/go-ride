@@ -1,8 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Input } from "../ui/input";
 import { v4 as uuidv4 } from "uuid";
+import { SourceCoordinatesContext } from "@/context/source-context";
+import { DestinationCoordinatesContext } from "@/context/destination-context";
 
 const MAPBOX_RETRIEVE_URL =
   "https://api.mapbox.com/search/searchbox/v1/retrieve/";
@@ -15,8 +17,12 @@ const Address = (props: Props) => {
   const [destination, setDestination] = useState("");
   const [destinationChange, setDestinationChange] = useState(false);
   const [addressList, setAddressList] = useState<any>(null);
-  const [sourceCoordinates, setSourceCoordinates] = useState<any>([]);
-  const [destinationCoordinates, setDestinationCoordinates] = useState<any>([]);
+  const { sourceCoordinates, setSourceCoordinates } = useContext<any>(
+    SourceCoordinatesContext
+  );
+  const { destinationCoordinates, setDestinationCoordinates } = useContext<any>(
+    DestinationCoordinatesContext
+  );
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
