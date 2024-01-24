@@ -17,10 +17,10 @@ const Address = (props: Props) => {
   const [destination, setDestination] = useState("");
   const [destinationChange, setDestinationChange] = useState(false);
   const [addressList, setAddressList] = useState<any>(null);
-  const { sourceCoordinates, setSourceCoordinates } = useContext<any>(
+  const { sourceCoordinates, setSourceCoordinates } = useContext(
     SourceCoordinatesContext
   );
-  const { destinationCoordinates, setDestinationCoordinates } = useContext<any>(
+  const { destinationCoordinates, setDestinationCoordinates } = useContext(
     DestinationCoordinatesContext
   );
 
