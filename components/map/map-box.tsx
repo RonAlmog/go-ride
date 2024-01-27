@@ -9,6 +9,7 @@ import { DestinationCoordinatesContext } from "@/context/destination-context";
 import { v4 as uuidv4 } from "uuid";
 import { DirectionDataContext } from "@/context/direction-context";
 import MapboxRoute from "./mapbox-route";
+import DistanceTime from "./distance-time";
 
 const MAPBOX_DRIVING_URL =
   "https://api.mapbox.com/directions/v5/mapbox/driving/";
@@ -61,7 +62,7 @@ const MapBox = (props: Props) => {
     setDirectionData(result);
   };
   return (
-    <div className="p-5">
+    <div className="p-5 relative">
       <h2 className="text-lg font-semibold">Map</h2>
       <div className="rounded-lg overflow-hidden">
         {userLocation ? (
@@ -84,6 +85,9 @@ const MapBox = (props: Props) => {
             ) : null}
           </Map>
         ) : null}
+      </div>
+      <div className="absolute bottom-10 z-20 right-5 hidden md:block">
+        <DistanceTime />
       </div>
     </div>
   );
