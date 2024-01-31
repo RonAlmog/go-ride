@@ -5,6 +5,44 @@ import { Input } from "../ui/input";
 import { v4 as uuidv4 } from "uuid";
 import { SourceCoordinatesContext } from "@/context/source-context";
 import { DestinationCoordinatesContext } from "@/context/destination-context";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+];
 
 const MAPBOX_RETRIEVE_URL =
   "https://api.mapbox.com/search/searchbox/v1/retrieve/";
@@ -17,6 +55,12 @@ const Address = (props: Props) => {
   const [destination, setDestination] = useState("");
   const [destinationChange, setDestinationChange] = useState(false);
   const [addressList, setAddressList] = useState<any>(null);
+
+  const [openSource, setOpenSource] = useState(false);
+  const [valueSource, setValueSource] = useState("");
+
+  const [openDestination, setOpenDestination] = useState(false);
+
   const { sourceCoordinates, setSourceCoordinates } = useContext(
     SourceCoordinatesContext
   );
@@ -44,12 +88,15 @@ const Address = (props: Props) => {
     });
     const results = await res.json();
     setAddressList(results);
+    console.log("addressList", addressList);
   };
 
   const onSourceAddressClick = async (item: any) => {
     setSource(item.full_address);
+    console.log("item>>", item);
+    console.log("source", source);
     setSourceChange(false);
-    setAddressList([]);
+    //setAddressList([]);
     // fetch address from mapbox
     const res = await fetch(
       `${MAPBOX_RETRIEVE_URL}${item.mapbox_id}?session_token=${sessionToken}&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
@@ -83,53 +130,110 @@ const Address = (props: Props) => {
         <h2 className="text-2xl font-semibold">Booking</h2>
       </CardHeader>
       <CardContent>
-        <div className="relative">
-          <label className="text-gray-500">Where from?</label>
-          <Input
-            value={source}
-            onChange={(e) => {
-              setSource(e.target.value);
-              setSourceChange(true);
-            }}
-          />
+        <label className="text-gray-500">Where from?</label>
+        <Popover open={openSource} onOpenChange={setOpenSource}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={openSource}
+              className="w-full justify-between"
+            >
+              {source ? source : "Select address..."}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="p-0 popover-content-width-same-as-its-trigger">
+            <Command>
+              <CommandInput
+                placeholder="From address..."
+                onValueChange={(value) => {
+                  setSourceChange(true);
+                  setSource(value);
+                }}
+              />
+              <CommandEmpty>No address found.</CommandEmpty>
+              <CommandGroup>
+                {addressList &&
+                  addressList.suggestions &&
+                  addressList?.suggestions.map((address: any) => (
+                    <CommandItem
+                      key={address.mapbox_id}
+                      value={address.full_address}
+                      onSelect={(currentValue) => {
+                        //setSource(currentValue);
+                        onSourceAddressClick(address);
+                        setOpenSource(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          valueSource === address.full_address
+                            ? "opacity-100"
+                            : "opacity-0"
+                        )}
+                      />
+                      {address.full_address}
+                    </CommandItem>
+                  ))}
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover>
 
-          {addressList?.suggestions && sourceChange ? (
-            <div className="shadow-md p-1 rounded-md absolute w-full bg-white">
-              {addressList?.suggestions.map((item: any, index: number) => (
-                <h2
-                  key={index}
-                  onClick={() => onSourceAddressClick(item)}
-                  className="p-3 hover:bg-gray-300 cursor-pointer"
-                >
-                  {item.full_address}
-                </h2>
-              ))}
-            </div>
-          ) : null}
-        </div>
         <div className="relative mt-3">
           <label className="text-gray-500">Where to?</label>
-          <Input
-            value={destination}
-            onChange={(e) => {
-              setDestination(e.target.value);
-              setDestinationChange(true);
-            }}
-          />
-
-          {addressList?.suggestions && destinationChange ? (
-            <div className="shadow-md p-1 rounded-md absolute w-full bg-white">
-              {addressList?.suggestions.map((item: any, index: number) => (
-                <h2
-                  key={index}
-                  onClick={() => onDestinationAddressClick(item)}
-                  className="p-3 hover:bg-gray-300 cursor-pointer"
-                >
-                  {item.full_address}
-                </h2>
-              ))}
-            </div>
-          ) : null}
+          <Popover open={openDestination} onOpenChange={setOpenDestination}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openSource}
+                className="w-full justify-between"
+              >
+                {destination ? destination : "Select address..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 popover-content-width-same-as-its-trigger">
+              <Command>
+                <CommandInput
+                  placeholder="To address..."
+                  onValueChange={(value) => {
+                    setDestinationChange(true);
+                    setDestination(value);
+                  }}
+                />
+                <CommandEmpty>No address found.</CommandEmpty>
+                <CommandGroup>
+                  {addressList &&
+                    addressList.suggestions &&
+                    addressList?.suggestions.map((address: any) => (
+                      <CommandItem
+                        key={address.mapbox_id}
+                        value={address.full_address}
+                        onSelect={(currentValue) => {
+                          //setSource(currentValue);
+                          onDestinationAddressClick(address);
+                          setOpenDestination(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            valueSource === address.full_address
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                        {address.full_address}
+                      </CommandItem>
+                    ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
       </CardContent>
     </Card>

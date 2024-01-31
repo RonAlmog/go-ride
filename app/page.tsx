@@ -3,6 +3,7 @@ import Booking from "@/components/booking/booking";
 import MapBox from "@/components/map/map-box";
 import { DestinationCoordinatesContext } from "@/context/destination-context";
 import { DirectionDataContext } from "@/context/direction-context";
+import { SelectedAmountContext } from "@/context/selected-amount";
 import { SourceCoordinatesContext } from "@/context/source-context";
 import { UseLocationContext } from "@/context/use-location-context";
 import { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ export default function Home() {
   const [sourceCoordinates, setSourceCoordinates] = useState<any>([]);
   const [destinationCoordinates, setDestinationCoordinates] = useState<any>([]);
   const [directionData, setDirectionData] = useState<any>([]);
+  const [selectedAmout, setSelectedAmount] = useState<any>();
 
   useEffect(() => {
     getUserLocation();
@@ -36,14 +38,18 @@ export default function Home() {
             <DirectionDataContext.Provider
               value={{ directionData, setDirectionData }}
             >
-              <div className="grid grid-cols-1 md:grid-cols-3">
-                <div className="col-span-1">
-                  <Booking />
+              <SelectedAmountContext.Provider
+                value={{ selectedAmout, setSelectedAmount }}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-3">
+                  <div className="col-span-1">
+                    <Booking />
+                  </div>
+                  <div className="col-span-2">
+                    <MapBox />
+                  </div>
                 </div>
-                <div className="col-span-2">
-                  <MapBox />
-                </div>
-              </div>
+              </SelectedAmountContext.Provider>
             </DirectionDataContext.Provider>
           </DestinationCoordinatesContext.Provider>
         </SourceCoordinatesContext.Provider>
